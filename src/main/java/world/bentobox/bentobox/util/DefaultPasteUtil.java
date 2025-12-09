@@ -303,7 +303,7 @@ public class DefaultPasteUtil {
             }
             // Orient to face same direction as sign
             Location spawnPoint = new Location(block.getWorld(), block.getX() + 0.5D, block.getY(),
-                    block.getZ() + 0.5D, Util.blockFaceToFloat(bf.getOppositeFace()), 30F);
+                    block.getZ() + 0.5D, Util.blockFaceToFloat(bf.getOppositeFace()), 0F);
             island.setSpawnPoint(block.getWorld().getEnvironment(), spawnPoint);
             return;
         }
