@@ -58,7 +58,6 @@ public class BlueprintPaster {
     private static long chunkLoadTime = 0;
 
     private final BentoBox plugin;
-    private final PasteHandler paster = Util.getPasteHandler();
     private final PasteHandler fallback = new world.bentobox.bentobox.nms.fallback.PasteHandlerImpl();
     private final World world;
     // The minimum block position (x,y,z)
@@ -248,7 +247,7 @@ public class BlueprintPaster {
                 count++;
             }
             if (!entityMap.isEmpty()) {
-                currentTask = useNMS ? paster.pasteEntities(island, world, entityMap)
+                currentTask = useNMS ? Util.getPasteHandler().pasteEntities(island, world, entityMap)
                         : fallback.pasteEntities(island, world, entityMap);
             }
         } else {
@@ -302,7 +301,7 @@ public class BlueprintPaster {
             count++;
         }
         if (!blockMap.isEmpty()) {
-            currentTask = useNMS ? paster.pasteBlocks(island, world, blockMap)
+            currentTask = useNMS ? Util.getPasteHandler().pasteBlocks(island, world, blockMap)
                     : fallback.pasteBlocks(island, world, blockMap);
         }
 

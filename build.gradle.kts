@@ -271,20 +271,31 @@ tasks.processResources {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     
     from(sourceSets.main.get().resources.srcDirs)
+
+    // Avoid capturing Gradle Project objects in execution-time actions (configuration-cache compatibility).
+    val mysqlVersionStr = mysqlVersion
+    val mariadbVersionStr = mariadbVersion
+    val postgresqlVersionStr = postgresqlVersion
+    val mongodbVersionStr = mongodbVersion
+    val hikaricpVersionStr = hikaricpVersion
+    val finalBuildNumberStr = finalBuildNumber
+    val projectVersionStr = project.version.toString()
+    val projectDescriptionStr = project.description ?: ""
+    val revisionStr = project.version.toString()
     
     // Replace variables in plugin.yml and config.yml with actual version strings
     // This allows version info to be read at runtime by the plugin
     filesMatching(listOf("plugin.yml", "config.yml")) {
         filter { line ->
-            line.replace("\${mysql.version}", mysqlVersion)
-                .replace("\${mariadb.version}", mariadbVersion)
-                .replace("\${postgresql.version}", postgresqlVersion)
-                .replace("\${mongodb.version}", mongodbVersion)
-                .replace("\${hikaricp.version}", hikaricpVersion)
-                .replace("\${build.number}", finalBuildNumber)
-                .replace("\${project.version}", project.version.toString())
-                .replace("\${project.description}", project.description ?: "")
-                .replace("\${revision}", project.version.toString())
+            line.replace("\${mysql.version}", mysqlVersionStr)
+                .replace("\${mariadb.version}", mariadbVersionStr)
+                .replace("\${postgresql.version}", postgresqlVersionStr)
+                .replace("\${mongodb.version}", mongodbVersionStr)
+                .replace("\${hikaricp.version}", hikaricpVersionStr)
+                .replace("\${build.number}", finalBuildNumberStr)
+                .replace("\${project.version}", projectVersionStr)
+                .replace("\${project.description}", projectDescriptionStr)
+                .replace("\${revision}", revisionStr)
         }
     }
     
@@ -295,7 +306,7 @@ tasks.processResources {
 tasks.register<Copy>("copyLocales") {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     from("src/main/resources/locales")
-    into("${tasks.processResources.get().destinationDir}/locales")
+    into(layout.buildDirectory.dir("resources/main/locales"))
 }
 
 // Ensure test compilation waits for locale files to be copied
