@@ -139,6 +139,15 @@ public class DefaultPasteUtil {
         } else
             // Signs
             if (bs instanceof Sign) {
+                // Spawn signs consume themselves (they set island spawn and replace the sign with air/water).
+                // Only apply the FRONT side to avoid running a second writeSign() after the block is gone.
+                if (island != null) {
+                    List<String> front = bpBlock.getSignLines(Side.FRONT);
+                    if (!front.isEmpty() && front.getFirst().equalsIgnoreCase(TextVariables.SPAWN_HERE)) {
+                        writeSign(island, block, bpBlock, Side.FRONT);
+                        return;
+                    }
+                }
                 for (Side side : Side.values()) {
                     writeSign(island, block, bpBlock, side);
                 }
@@ -292,8 +301,17 @@ public class DefaultPasteUtil {
         List<String> lines = bpSign.getSignLines(side);
         boolean glow = bpSign.isGlowingText(side);
         BlockData bd = block.getBlockData();
-        BlockFace bf = (bd instanceof WallSign ws) ? ws.getFacing()
-                : ((org.bukkit.block.data.type.Sign) bd).getRotation();
+        BlockFace bf;
+        if (bd instanceof WallSign ws) {
+            bf = ws.getFacing();
+        } else if (bd instanceof org.bukkit.block.data.type.WallHangingSign whs) {
+            bf = whs.getFacing();
+        } else if (bd instanceof org.bukkit.block.data.Rotatable rotatable) {
+            bf = rotatable.getRotation();
+        } else {
+            plugin.logWarning("Unable to read sign rotation from " + bd.getClass().getName() + " for " + block.getType());
+            bf = BlockFace.NORTH;
+        }
         // Handle spawn sign
         if (side == Side.FRONT && island != null && !lines.isEmpty() && lines.getFirst().equalsIgnoreCase(TextVariables.SPAWN_HERE)) {
             if (bd instanceof Waterlogged wl && wl.isWaterlogged()) {
