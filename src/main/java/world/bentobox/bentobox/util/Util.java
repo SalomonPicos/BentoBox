@@ -763,6 +763,22 @@ public class Util {
     }
 
     /**
+     * Sets the {@link PasteHandler} BentoBox will use for blueprint pasting.
+     *
+     * <p>Passing {@code null} resets the handler back to the default implementation
+     * (which will be lazily constructed on the next {@link #getPasteHandler()} call).</p>
+     *
+     * <p>This hook is intended for addons that want to accelerate blueprint paste operations
+     * while keeping the rest of BentoBox's paste pipeline intact.</p>
+     *
+     * @param handler the handler to use, or {@code null} to restore defaults
+     * @since 3.11.0
+     */
+    public static void setPasteHandler(PasteHandler handler) {
+        Util.pasteHandler = handler;
+    }
+
+    /**
      * Get metadata decoder
      * @return an accelerated metadata class for this server
      */
