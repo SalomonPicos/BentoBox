@@ -2,6 +2,7 @@ package world.bentobox.bentobox.commands;
 
 import java.util.List;
 
+import world.bentobox.bentobox.api.addons.Addon;
 import world.bentobox.bentobox.api.commands.CompositeCommand;
 import world.bentobox.bentobox.api.commands.ConfirmableCommand;
 import world.bentobox.bentobox.api.panels.reader.TemplateReader;
@@ -57,10 +58,22 @@ public class BentoBoxReloadCommand extends ConfirmableCommand {
                 // Register new default gamemode placeholders
                 getPlugin().getAddonsManager().getGameModeAddons().forEach(getPlugin().getPlaceholdersManager()::registerDefaultPlaceholders);
 
+                // Reload addons so they can restore placeholders/config without restart
+                getPlugin().getAddonsManager().getEnabledAddons().forEach(this::reloadAddonSafe);
+
             });
         } else {
             showHelp(this, user);
         }
         return true;
+    }
+
+    private void reloadAddonSafe(Addon addon) {
+        try {
+            addon.onReload();
+        } catch (Exception e) {
+            getPlugin().logError("Failed to reload addon " + addon.getDescription().getName() + ": " + e.getMessage());
+            getPlugin().logStacktrace(e);
+        }
     }
 }
