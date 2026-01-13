@@ -80,7 +80,7 @@ version = finalRevision
 val javaVersion = "21"
 val junitVersion = "5.10.2"
 val mockitoVersion = "5.11.0"
-val mockBukkitVersion = "v1.21-SNAPSHOT"
+val mockBukkitVersion = "4.98.0"
 val mongodbVersion = "3.12.12"
 val mariadbVersion = "3.0.5"
 val mysqlVersion = "8.0.27"
@@ -194,7 +194,7 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:$junitVersion")
     testImplementation("org.mockito:mockito-junit-jupiter:$mockitoVersion")
     testImplementation("org.mockito:mockito-core:$mockitoVersion")
-    testImplementation("com.github.MockBukkit:MockBukkit:$mockBukkitVersion")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:$mockBukkitVersion")
     testImplementation("org.awaitility:awaitility:$awaitilityVersion")
     testImplementation("io.papermc.paper:paper-api:$paperVersion")
     testImplementation("com.github.MilkBowl:VaultAPI:$vaultVersion")
